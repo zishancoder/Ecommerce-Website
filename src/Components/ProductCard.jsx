@@ -1,21 +1,54 @@
-import { Button, ButtonGroup, Card, CardBody, CardFooter, Divider, Heading, Image, Stack, Text } from "@chakra-ui/react";
+import {
+  Button,
+  ButtonGroup,
+  Card,
+  CardBody,
+  CardFooter,
+  Divider,
+  Heading,
+  Image,
+  Stack,
+  Text,
+  useToast,
+} from "@chakra-ui/react";
+import { useDispatch} from "react-redux";
 
-function ProductCard() {
+function ProductCard({ details }) {
+
+  const toast = useToast();
+  const dispatch = useDispatch();
+  
+  const addToCartHandler = (item) => {
+    
+    //Toast Code
+    toast({
+      title: "Added to Cart",
+      status: "success",
+      duration: 1000,
+      isClosable: true,
+      position: "top",
+    });
+
+    //Add to cart code
+    dispatch({
+      type:"updateCart",
+      payload:item
+    })
+  };
+
   return (
     <Card maxW="sm">
       <CardBody>
         <Image
-          src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
+          src={details.images[0]}
           alt="Green double couch with wooden legs"
           borderRadius="lg"
         />
         <Stack mt="6" spacing="3">
-          <Heading size="md">Living room Sofa</Heading>
-          <Text>
-            This sofa is perfect for modern tropical spaces, baroque inspired
-          </Text>
+          <Heading size="md">{details.title}</Heading>
+          <Text>{details.description}</Text>
           <Text color="blue.600" fontSize="2xl">
-            $450
+            Price: ${details.price}
           </Text>
         </Stack>
       </CardBody>
@@ -25,7 +58,7 @@ function ProductCard() {
           <Button variant="solid" colorScheme="blue">
             Buy now
           </Button>
-          <Button variant="ghost" colorScheme="blue">
+          <Button variant="ghost" colorScheme="blue" onClick={()=>addToCartHandler(details)}>
             Add to cart
           </Button>
         </ButtonGroup>

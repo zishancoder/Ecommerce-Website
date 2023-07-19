@@ -1,18 +1,41 @@
-import { Badge, Box, Container, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerHeader, DrawerOverlay, Flex, Heading, Spacer, useDisclosure } from "@chakra-ui/react";
+import {
+  Badge,
+  Box,
+  Container,
+  Drawer,
+  DrawerBody,
+  DrawerCloseButton,
+  DrawerContent,
+  DrawerHeader,
+  DrawerOverlay,
+  Flex,
+  Heading,
+  Spacer,
+  useDisclosure,
+} from "@chakra-ui/react";
 import { useRef } from "react";
 import { BsFillCartFill } from "react-icons/bs";
 import CartProductCard from "./CartProductCard";
+import { useSelector } from "react-redux";
 
 function Header() {
-    const { isOpen, onOpen, onClose } = useDisclosure();
-    const drawerBtn = useRef();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const drawerBtn = useRef();
+
+  const { products } = useSelector((state) => state.cartProducts);
+  
   return (
     <Container maxWidth={"6xl"} p={"1rem"} color={"gray.700"}>
       <Flex>
         <Heading>Apna Bazzar</Heading>
         <Spacer />
         <Box position={"relative"}>
-          <BsFillCartFill size={"2.5rem"} cursor={"pointer"} ref={drawerBtn} onClick={onOpen}/>
+          <BsFillCartFill
+            size={"2.5rem"}
+            cursor={"pointer"}
+            ref={drawerBtn}
+            onClick={onOpen}
+          />
           <Badge
             pos={"absolute"}
             top={"0"}
@@ -22,7 +45,7 @@ function Header() {
             bgColor={"blue.500"}
             color={"white"}
           >
-            5
+            {products.length>0 && products.length}
           </Badge>
         </Box>
         <Drawer
@@ -36,10 +59,21 @@ function Header() {
             <DrawerCloseButton />
             <DrawerHeader>Cart Items</DrawerHeader>
             <DrawerBody>
-               <CartProductCard/>
-               <CartProductCard/>
-               <CartProductCard/>
-               <CartProductCard/>
+              { 
+                products.length > 0 
+                &&
+                products.map((product, idx) => (
+                  <CartProductCard
+                    key={product.id}
+                    id={product.id}
+                    title={product.title}
+                    desc={product.description}
+                    imgUrl={product.thumbnail}
+                    price={product.price}
+                  />
+                ))
+
+              }
             </DrawerBody>
           </DrawerContent>
         </Drawer>
