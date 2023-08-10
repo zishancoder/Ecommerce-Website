@@ -1,29 +1,45 @@
 import {
   Badge,
   Box,
+  Button,
   Container,
   Drawer,
   DrawerBody,
   DrawerCloseButton,
   DrawerContent,
+  DrawerFooter,
   DrawerHeader,
   DrawerOverlay,
   Flex,
+  HStack,
   Heading,
   Spacer,
+  Text,
   useDisclosure,
 } from "@chakra-ui/react";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BsFillCartFill } from "react-icons/bs";
 import CartProductCard from "./CartProductCard";
 import { useSelector } from "react-redux";
 
+
+function calculateTotalPrice(products=[]){
+    let sum = 0;
+    for(let i=0;i<products.length;i++){
+      sum+=products[i].price;
+    }
+    return sum;
+}
+
+
 function Header() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const drawerBtn = useRef();
-
+  const [totalPrice,setTotalPrice] = useState(250);
   const { products } = useSelector((state) => state.cartProducts);
-  
+  useEffect(()=>{
+    setTotalPrice(calculateTotalPrice(products));
+  },[products]);
   return (
     <Container maxWidth={"6xl"} p={"1rem"} color={"gray.700"}>
       <Flex>
@@ -75,6 +91,13 @@ function Header() {
 
               }
             </DrawerBody>
+            <DrawerFooter>
+              <HStack>
+                <Text>Total Price: ${totalPrice}</Text>
+                <Spacer/>
+                <Button colorScheme={'telegram'}>Check Out</Button>
+              </HStack>
+            </DrawerFooter>
           </DrawerContent>
         </Drawer>
       </Flex>
